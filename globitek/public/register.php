@@ -1,6 +1,6 @@
 <?php
-require_once('../private/initialize.php');
-require_once('../private/validation_functions.php');
+	require_once('../private/initialize.php');
+	require_once('../private/validation_functions.php');
 
   // Set default values for all variables the page needs.
 
@@ -32,7 +32,9 @@ require_once('../private/validation_functions.php');
     //   exit;
     // }
 
-	$submitted;
+	
+	
+	$submitted = null;
 	
 	$firstName;
 	$lastName;
@@ -64,7 +66,6 @@ require_once('../private/validation_functions.php');
 		
 		$submitted = isset($_POST["submit"]);
 		
-	
 		// Was it submitted?
 		if($submitted){
 	
@@ -87,6 +88,36 @@ require_once('../private/validation_functions.php');
 				
 			}
 			
+			if(!has_length($firstName, array(2,255))){
+				
+				$badFirstNameSize = true;
+				$errorFlag = true;
+				
+			}
+			
+			if(!has_length($lastName, array(2,255))){
+				
+				$badLastNameSize = true;
+				$errorFlag = true;
+				
+			}
+			
+			if(!has_length($username, array(8,255))){
+				
+				$badUsernameSize = true;
+				$errorFlag = true;
+				
+			}
+			
+			if(!has_valid_email_format($email)){
+				
+				$badEmailFormat = true;
+				$errorFlag = true;
+				
+			}
+			
+			// If there are any errors, don't mess with the SQL. 
+			// Display error feedback instead.
 			if($errorFlag){
 				
 				echo 'Please fix the following errors:';
@@ -99,8 +130,17 @@ require_once('../private/validation_functions.php');
 				echo $badLastNameSize?'<li> Last name must be at least 2 characters':'';
 				echo $badFirstNameSize?'<li> First name must be at least 2 characters':'';
 				echo $badUsernameSize?'<li> Username must be at least 8 characters':'';
+				echo $badEmailFormat?'<li> Email is not of proper format':'';
 				
 				echo '</ul>';
+				
+			}else{
+			// No errors. Everything is fine, insert into database, and redirect to confirmation page.
+				
+				//SQL stuff here
+				
+				header('Location: registration_success.php');
+				exit;
 				
 			}
 	
@@ -111,16 +151,16 @@ require_once('../private/validation_functions.php');
 		<form method="post" action="./register.php">
 		  
 			First name: <br>
-			<input type="text" name="first_name" value= <?php echo $submitted?$firstName:""; ?>> <br>
+			<input type="text" name="first_name" value= <?php echo $submitted?h($firstName):""; ?>> <br>
 				
 			Last name: <br>
-			<input type="text" name="last_name" value= <?php echo $submitted?$lastName:""; ?>> <br>
+			<input type="text" name="last_name" value= <?php echo $submitted?h($lastName):""; ?>> <br>
 				
 			Email: <br>
-			<input type="text" name="email" value= <?php echo $submitted?$email:""; ?>> <br>
+			<input type="text" name="email" value= <?php echo $submitted?h($email):""; ?>> <br>
 
 			Username: <br>
-			<input type="text" name="username" value= <?php echo $submitted?$username:""; ?>> <br> <br>
+			<input type="text" name="username" value= <?php echo $submitted?h($username):""; ?>> <br> <br>
 				
 			<input type="submit" name="submit" value="Submit">
 		  
