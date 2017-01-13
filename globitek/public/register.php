@@ -118,17 +118,17 @@
 
 				$date = date('Y-m-d H:i:s');
 				
-				if(!$stmt = $db->prepare("INSERT INTO users (first_name, last_name, email, username, created_at) VALUES (?, ?, ?, ?, ?)")){
+				if(!$stmt = $db->prepare("INSERT INTO users (first_name, last_name, email, username, created_at) VALUES (?, ?, ?, ?, ?)"))
 					
 					echo "Prepare failed: (" . $db->errno . ") " . $db->error;
 					
-				}
 				
-				if(!$stmt->bind_param("sssss", $firstName, $lastName, $email, $username, $date)){
+				
+				if(!$stmt->bind_param("sssss", $firstName, $lastName, $email, $username, $date))
 					
 					echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
 					
-				}
+				
 				
 				
 				// For INSERT statments, $result is just true/false
