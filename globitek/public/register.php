@@ -12,28 +12,6 @@
     // Perform Validations
     // Hint: Write these in private/validation_functions.php
 
-    // if there were no errors, submit data to database
-
-    // Write SQL INSERT statement
-    // $sql = "";
-
-    // For INSERT statments, $result is just true/false
-    // $result = db_query($db, $sql);
-    // if($result) {
-    //   db_close($db);
-
-    //   TODO redirect user to success page
-
-    // } else {
-    //   // The SQL INSERT statement failed.
-    //   // Just show the error, not the form
-    //   echo db_error($db);
-    //   db_close($db);
-    //   exit;
-    // }
-
-	
-	
 	$submitted = null;
 	
 	$firstName;
@@ -136,11 +114,41 @@
 				
 			}else{
 			// No errors. Everything is fine, insert into database, and redirect to confirmation page.
+				// Write SQL INSERT statement
+
+				$date = date('Y-m-d H:i:s');
 				
-				//SQL stuff here
+				if(!$stmt = $db->prepare("INSERT INTO users (first_name, last_name, email, username, created_at) VALUES (?, ?, ?, ?, ?)")){
+					
+					echo "Prepare failed: (" . $db->errno . ") " . $db->error;
+					
+				}
 				
-				header('Location: registration_success.php');
-				exit;
+				if(!$stmt->bind_param("sssss", $firstName, $lastName, $email, $username, $date)){
+					
+					echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+					
+				}
+				
+				
+				// For INSERT statments, $result is just true/false
+				$result = $stmt->execute();
+				if($result) {
+					
+					db_close($db);
+				
+					header('Location: registration_success.php');
+					exit;
+				  
+				} else {
+					// The SQL INSERT statement failed.
+					// Just show the error, not the form
+					
+					echo db_error($db);
+					db_close($db);
+					exit;
+					
+				}
 				
 			}
 	
